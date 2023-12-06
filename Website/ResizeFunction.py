@@ -1,7 +1,5 @@
-import boto3
 import os
 import sys
-from PIL import Image
 from io import BytesIO
 
 s3 = boto3.client('s3')
