@@ -8,11 +8,16 @@
 <body>
     <div class="upload-container">
         <form id="uploadForm" enctype="multipart/form-data" class="form">
-            <div class="upload-btn-wrapper">
-                <button class="btn">Choose a file</button>
-                <input type="file" name="myfile" />
+            <div class="info">
+                <h2 style="margin: 0; margin-bottom: 10px; padding: 0;">Foto auswählen</h2>
+                <p style="margin: 0;">Bitte wählen Sie ein Foto aus. <br> Der Name des Fotofiles wird
+                hier erscheinen: <p class="file-info"></p></p>
             </div>
             <button type="submit" class="submit-button">Hochladen</button>
+            <div class="upload-btn-wrapper">
+                    <button class="btn">+</button>
+                <input type="file" name="myfile" />
+            </div>
         </form>
         <div id="message"></div>
     </div>
