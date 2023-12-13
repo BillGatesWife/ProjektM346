@@ -48,6 +48,9 @@ body {
     }
 
 .upload-btn-wrapper {
+  height: 100px;
+  position: relative;
+  overflow: hidden;
 }
 
 .upload-btn-wrapper button {
@@ -83,11 +86,15 @@ body {
 
 .btn {
   border: 2px solid rgb(108, 182, 255);
-  color: rgb(108, 182, 255);
   background-color: #ffffff;
   padding: 8px 20px;
   transition: 0.3s;
+  display: flex;
+  height: 42px;
   border-radius: 13px;
   font-size: 15px;
   font-weight: bold;
+}
+.btn:hover {
+  background-color: red;
 }
