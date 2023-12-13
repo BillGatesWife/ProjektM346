@@ -4,36 +4,34 @@ document.querySelector('.upload-btn-wrapper input[type=file]').addEventListener(
       document.querySelector('.btn').textContent = this.files[0].name;
     }
   });
-  
-// Load the AWS SDK for JavaScript
-var AWS = require('aws-sdk');
 
-// Set the region
-AWS.config.update({region: 'us-east-1'});
 
-// Create an S3 service object
-var s3 = new AWS.S3({apiVersion: '2006-03-01'});
 
-// Set the bucket name and key
-var bucketName = 'ImagesToResize';
-var keyName = 'KEY';
+document.getElementById('uploadForm').addEventListener('submit', function(event) {
+  event.preventDefault(); // Verhindert das Standardverhalten des Formulars (Seiten-Refresh)
 
-// Create a new FormData object
-var formData = new FormData();
+  var fileInput = document.querySelector('input[type="file"]');
+  var file = fileInput.files[0];
 
-// Add the file to the FormData object
-formData.append('file', file);
+  if (file) {
+      var formData = new FormData();
+      formData.append('myfile', file);
 
-// Upload the file to the S3 bucket
-s3.upload({
-    Bucket: bucketName,
-    Key: keyName,
-    Body: file,
-    ACL: 'public-read'
-}, function(err, data) {
-    if (err) {
-        console.log('Error uploading file:', err);
-    } else {
-        console.log('File uploaded successfully:', data.Location);
-    }
+      fetch('/your-upload-endpoint', { // Ersetze '/your-upload-endpoint' durch den tatsächlichen Endpunkt zum Hochladen
+          method: 'POST',
+          body: formData
+      })
+      .then(function(response) {
+          return response.json();
+      })
+      .then(function(data) {
+          console.log('Upload successful:', data);
+          // Hier kannst du weitere Aktionen nach dem erfolgreichen Upload durchführen
+      })
+      .catch(function(error) {
+          console.error('Error uploading:', error);
+      });
+  } else {
+      console.log('No file selected.');
+  }
 });
