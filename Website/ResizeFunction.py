@@ -1,6 +1,7 @@
-import os
-import sys
-from io import BytesIO
+import boto3
+from _tkinter import Image
+import uuid
+
 
 s3 = boto3.client('s3')
 
