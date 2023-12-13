@@ -1,38 +1,56 @@
-const express = require('express');
-const fileUpload = require('express-fileupload');
-const { exec } = require('child_process');
-const app = express();
-const port = 3000;
+document.addEventListener('DOMContentLoaded', function() {
+  const fileInfo = document.querySelector('.file-info');
+  const uploadForm = document.getElementById('uploadForm');
 
-app.use(fileUpload());
+  uploadForm.addEventListener('submit', function(event) {
+    event.preventDefault();
+    const fileInput = this.querySelector('input[type="file"]');
+    const file = fileInput.files[0];
+    if (!file) {
+      alert('Bitte wählen Sie eine Datei aus.');
+      return;
+    }
+    
+    // Display the file name
+    fileInfo.textContent = file.name;
 
-app.post('/upload', (req, res) => {
-  if (!req.files || Object.keys(req.files).length === 0) {
-    return res.status(400).send('Keine Dateien wurden hochgeladen.');
-  }
+    // Prepare the form data to send to the server
+    const formData = new FormData();
+    formData.append('imageFile', file);
 
-  // The name of the input field is 'imageFile' based on the HTML form
-  let uploadedImage = req.files.imageFile;
-
-  // Use the mv() method to place the file somewhere on your server
-  const uploadPath = __dirname + '/uploads/' + uploadedImage.name;
-
-  uploadedImage.mv(uploadPath, function(err) {
-    if (err) return res.status(500).send(err);
-
-    // Call the Python script to resize the image
-    const scriptPath = __dirname + '/ResizeFunction.py';
-    exec(`python "${scriptPath}" "${uploadPath}"`, (error, stdout, stderr) => {
-      if (error) {
-        console.error(`exec error: ${error}`);
-        return res.status(500).send(stderr);
-      }
-      console.log(`Resize output: ${stdout}`);
-      res.send({ message: 'Das Bild wurde erfolgreich hochgeladen und verkleinert.' });
+    // Make an AJAX request to the server
+    fetch('/upload', {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+      document.getElementById('message').textContent = data.message;
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      document.getElementById('message').textContent = 'Fehler beim Upload.';
     });
+  });
+
+  // Handle file selection
+  document.querySelector('.upload-btn-wrapper input[type="file"]').addEventListener('change', function() {
+    if (this.files && this.files.length > 0) {
+      fileInfo.textContent = this.files[0].name;
+    }
   });
 });
 
-app.listen(port, () => {
-  console.log(`Server listening at http://localhost:${port}`);
+document.getElementById('uploadForm').addEventListener('submit', function(e) {
+  e.preventDefault();  // Verhindern, dass das Formular auf traditionelle Weise abgesendet wird.
+
+  var fileInput = document.querySelector('input[type="file"]');
+  var file = fileInput.files[0];
+  if (!file) {
+    alert('Bitte wählen Sie eine Datei aus.');  // Diese Meldung sollte nur erscheinen, wenn keine Datei ausgewählt wurde.
+    return;  // Verhindern, dass der folgende Code ausgeführt wird, wenn keine Datei ausgewählt ist.
+  }
+  
+  // Hier würde der Rest Ihres Upload-Codes stehen...
 });
+
