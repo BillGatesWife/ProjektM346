@@ -1,56 +1,52 @@
-document.addEventListener('DOMContentLoaded', function() {
-  const fileInfo = document.querySelector('.file-info');
-  const uploadForm = document.getElementById('uploadForm');
+document.getElementById('uploadForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const files = document.querySelector('[name=image]').files;
+  const formData = new FormData();
+  formData.append('image', files[0]);
 
-  uploadForm.addEventListener('submit', function(event) {
-    event.preventDefault();
-    const fileInput = this.querySelector('input[type="file"]');
-    const file = fileInput.files[0];
-    if (!file) {
-      alert('Bitte wählen Sie eine Datei aus.');
-      return;
-    }
-    
-    // Display the file name
-    fileInfo.textContent = file.name;
-
-    // Prepare the form data to send to the server
-    const formData = new FormData();
-    formData.append('imageFile', file);
-
-    // Make an AJAX request to the server
-    fetch('/upload', {
+  fetch('/upload', {
       method: 'POST',
       body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-      document.getElementById('message').textContent = data.message;
-    })
-    .catch(error => {
-      console.error('Error:', error);
-      document.getElementById('message').textContent = 'Fehler beim Upload.';
-    });
-  });
-
-  // Handle file selection
-  document.querySelector('.upload-btn-wrapper input[type="file"]').addEventListener('change', function() {
-    if (this.files && this.files.length > 0) {
-      fileInfo.textContent = this.files[0].name;
-    }
+  })
+  .then(response => response.json())
+  .then(data => {
+      console.log(data);
+      alert('Bild erfolgreich hochgeladen!');
+  })
+  .catch(error => {
+      console.error(error);
+      alert('Fehler beim Hochladen des Bildes.');
   });
 });
 
 document.getElementById('uploadForm').addEventListener('submit', function(e) {
-  e.preventDefault();  // Verhindern, dass das Formular auf traditionelle Weise abgesendet wird.
+  e.preventDefault();
 
-  var fileInput = document.querySelector('input[type="file"]');
-  var file = fileInput.files[0];
-  if (!file) {
-    alert('Bitte wählen Sie eine Datei aus.');  // Diese Meldung sollte nur erscheinen, wenn keine Datei ausgewählt wurde.
-    return;  // Verhindern, dass der folgende Code ausgeführt wird, wenn keine Datei ausgewählt ist.
+  const files = document.querySelector('[name=image]').files;
+  const accessKeyId = document.getElementById('accessKeyId').value;
+  const secretAccessKey = document.getElementById('secretAccessKey').value;
+
+  if (!accessKeyId || !secretAccessKey) {
+      alert('Bitte geben Sie Ihre AWS-Zugangsdaten ein.');
+      return;
   }
-  
-  // Hier würde der Rest Ihres Upload-Codes stehen...
-});
 
+  const formData = new FormData();
+  formData.append('image', files[0]);
+  formData.append('accessKeyId', accessKeyId);
+  formData.append('secretAccessKey', secretAccessKey);
+
+  fetch('/upload', {
+      method: 'POST',
+      body: formData
+  })
+  .then(response => response.json())
+  .then(data => {
+      console.log(data);
+      alert('Bild erfolgreich hochgeladen!');
+  })
+  .catch(error => {
+      console.error(error);
+      alert('Fehler beim Hochladen des Bildes.');
+  });
+});
