@@ -76,10 +76,10 @@ aws s3api put-bucket-notification-configuration \
 
   aws s3api put-object-acl \
 --bucket <image-upload-project-346> \
---key test.txt \
+--key test.png \
 --acl public-read
 
 aws s3api put-object-acl \
 --bucket <image-download-project-346> \
---key test.txt \
+--key test.Png \
 --acl public-read
